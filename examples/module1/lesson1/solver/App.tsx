@@ -1,58 +1,43 @@
-import React, { useState } from 'react';
-import { f1, f2, f3, f4 } from './functions';
+import { useState } from 'react';
+import { add, subtract, multiply, divide } from './calculator/functions';
+import Button from './calculator/button';
+import convertEmptyToZero from './calculator/empty-to-zero';
 
 const App = () => {
-  const [numA, setNumA] = useState<number>(0);
-  const [numB, setNumB] = useState<number>(0);
-  const [numC, setNumC] = useState<number | string>(0);
+  const [firstNumber, setFirstNumber] = useState<number>(0);
+  const [secondNumber, setSecondNumber] = useState<number>(0);
+  const [result, setResult] = useState<number | string>(0);
 
-  const doWork = (func: (a: number, b: number) => number) => {
-    setNumC(func(numA, numB));
+  const calculate = (func: (firstNumber: number, secondNumber: number) => number | string) => {
+    const result = func(convertEmptyToZero(firstNumber), convertEmptyToZero(secondNumber));
+    setResult(result);
   };
 
   return (
     <div>
       <div className="grid grid-cols-2 gap-x-4">
         <input
+          aria-label='First number'
           type="number"
           className="rounded-md shadow-md p-4"
-          value={numA}
-          onChange={(e) => setNumA(parseFloat(e.target.value))}
+          value={firstNumber}
+          onChange={(e) => setFirstNumber(parseFloat(e.target.value))}
         />
         <input
+          aria-label='Second number'
           type="number"
           className="rounded-md shadow-md p-4"
-          value={numB}
-          onChange={(e) => setNumB(parseFloat(e.target.value))}
+          value={secondNumber}
+          onChange={(e) => setSecondNumber(parseFloat(e.target.value))}
         />
       </div>
       <div className="grid grid-cols-4 gap-x-4 my-4">
-        <button
-          className="bg-blue-200 px-2 py-4 text-lg hover:bg-blue-500 hover:text-white rounded-md"
-          onClick={() => doWork(f1)}
-        >
-          +
-        </button>
-        <button
-          className="bg-blue-200 px-2 py-4 text-lg hover:bg-blue-500 hover:text-white rounded-md"
-          onClick={() => doWork(f2)}
-        >
-          -
-        </button>
-        <button
-          className="bg-blue-200 px-2 py-4 text-lg hover:bg-blue-500 hover:text-white rounded-md"
-          onClick={() => doWork(f3)}
-        >
-          *
-        </button>
-        <button
-          className="bg-blue-200 px-2 py-4 text-lg hover:bg-blue-500 hover:text-white rounded-md"
-          onClick={() => doWork(f4)}
-        >
-          /
-        </button>
+        <Button onClick={() => calculate(add)}>+</Button>
+        <Button onClick={() => calculate(subtract)}>-</Button>
+        <Button onClick={() => calculate(multiply)}>*</Button>
+        <Button onClick={() => calculate(divide)}>/</Button>
       </div>
-      <div>Result: {numC}</div>
+      <div>Result: {result}</div>
     </div>
   );
 };
