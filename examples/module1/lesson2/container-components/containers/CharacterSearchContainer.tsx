@@ -1,50 +1,38 @@
-import { useEffect, useState } from 'react';
-import CharacterList from '../components/CharacterList';
-import SearchForm from '../components/SearchForm';
-import SearchTitle from '../components/SearchTitle';
-import type { Character } from '../types/Character';
+import { useState } from 'react';
+import CharacterList from '../components/characters/CharacterList';
+import SearchForm from '../components/search/SearchForm';
+import SearchTitle from '../components/search/SearchTitle';
+import CharacterListItem from '../components/characters/CharacterListItem';
+import SearchByName from '../components/search/SearchByName';
+import SearchByGender from '../components/search/SearchByGender';
+import SortBy from '../components/search/SortBy';
+import useCharacters from './useCharacters';
+import sortCharacters from './sortCharacters';
 
 function CharacterSearchContainer() {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
-  const [characters, setCharacters] = useState<Character[]>([]);
   const [sortOption, setSortOption] = useState('');
 
-  useEffect(() => {
-    if (name || gender) {
-      fetch(
-        `https://rickandmortyapi.com/api/character/?name=${name}&gender=${gender}`
-      )
-        .then((response) => response.json())
-        .then((data) => setCharacters(data.results || []))
-        .catch((error) => console.error('Error fetching data:', error));
-    }
-  }, [name, gender]);
-
-  const sortedCharacters = [...characters].sort((a, b) => {
-    if (sortOption === 'name') {
-      return a.name.localeCompare(b.name);
-    } else if (sortOption === 'created') {
-      return new Date(a.created).getTime() - new Date(b.created).getTime();
-    }
-    return 0;
-  });
+  const characters = useCharacters({ name, gender });
+  const sortedCharacters = sortCharacters({characters, sortOption});
 
   return (
     <>
       <div className="pt-20" />
-      <SearchTitle />
+      <SearchTitle title='Wyszukiwarka postaci Rick and Morty' />
       <div className="pt-8" />
-      <SearchForm
-        name={name}
-        setName={setName}
-        gender={gender}
-        setGender={setGender}
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-      />
+      <SearchForm>
+        <SearchByName name={name} setName={setName}/>
+        <SearchByGender gender={gender} setGender={setGender} />
+        <SortBy sortOption={sortOption} setSortOption={setSortOption} />
+      </SearchForm>
       <div className="pt-12" />
-      <CharacterList characters={sortedCharacters} />
+      <CharacterList>
+        {sortedCharacters.map((character) => (
+          <CharacterListItem character={character} key={character.id} />
+        ))}  
+      </CharacterList>
       <div className="pt-16" />
     </>
   );
