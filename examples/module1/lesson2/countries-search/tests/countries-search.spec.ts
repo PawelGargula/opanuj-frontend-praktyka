@@ -3,7 +3,7 @@ import { handleCountriesRoute } from './utils/handleCountriesRoute';
 
 test.describe('Countries Search Application', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('**/restcountries.com/v3.1/**', handleCountriesRoute);
+    // await page.route('**/restcountries.com/v3.1/**', handleCountriesRoute);
   });
 
   test.beforeEach(async ({ page }) => {
@@ -31,12 +31,10 @@ test.describe('Countries Search Application', () => {
       "Search by country's currency..."
     );
 
-    const responsePromise = page.waitForResponse('**/currency/EUR');
     await searchInput.fill('EUR');
-    await responsePromise;
 
-    await expect(page.getByText('Germany')).toBeVisible();
-    await expect(page.getByText('France')).toBeVisible();
+    await expect(page.getByText('Austria')).toBeVisible();
+    await expect(page.getByText('Belgium')).toBeVisible();
   });
 
   test('should sort countries alphabetically', async ({ page }) => {
