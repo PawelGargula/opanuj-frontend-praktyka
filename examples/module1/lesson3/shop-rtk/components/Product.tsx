@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { BsEyeFill, BsPlus } from 'react-icons/bs';
@@ -27,6 +26,7 @@ const Product = ({ product }: { product: ProductType }) => {
           <button
             data-testid="add-to-cart-button"
             onClick={() => dispatch(addToCart(product))}
+            title='Add to cart'
           >
             <div className="flex justify-center items-center text-white w-12 h-12 bg-teal-500">
               <BsPlus className="text-3xl" />
